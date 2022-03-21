@@ -1,0 +1,201 @@
+{
+    "description": "(example values) Fs=44100; %sampling rate                      M=32; %number of microphones written to file                      sec=2; %length (in seconds) of the data block to read                      Nt=Fs*sec; %number of samples in the data block to read                                           fid=fopen('my_file.int16','rb'); %open file id for reading                      Data=fread(fid,[ M Nt],'int16'); %read in microphone samples and put them in the matrix 'Data'. Each row in 'Data'  corresponds to Nt samples from one microphone. The indexing of the rows will then correspond to the microphone indexing so that samples on row 1 are samples from microphone 1, etc.                      fclose all;",
+    "samplerate": 48000.0,
+    "lengthInSeconds": 3.0,
+    "format": "int16 interleaved",
+    "unitInPosition": "meter",
+    "elements": [
+        {
+            "index": 1.0,
+            "x": 0.5,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 1.0,
+            "x": 0.375,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 2.0,
+            "x": 0.25,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 3.0,
+            "x": 0.125,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 4.0,
+            "x": 0.0,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 5.0,
+            "x": -0.125,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 6.0,
+            "x": -0.25,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 7.0,
+            "x": -0.375,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 8.0,
+            "x": -0.5,
+            "y": -0.5,
+            "z": 0.0
+        },
+        {
+            "index": 9.0,
+            "x": -0.5,
+            "y": -0.375,
+            "z": 0.0
+        },
+        {
+            "index": 10.0,
+            "x": -0.5,
+            "y": -0.25,
+            "z": 0.0
+        },
+        {
+            "index": 11.0,
+            "x": -0.5,
+            "y": -0.125,
+            "z": 0.0
+        },
+        {
+            "index": 12.0,
+            "x": -0.5,
+            "y": 0.0,
+            "z": 0.0
+        },
+        {
+            "index": 13.0,
+            "x": -0.5,
+            "y": 0.125,
+            "z": 0.0
+        },
+        {
+            "index": 14.0,
+            "x": -0.5,
+            "y": 0.25,
+            "z": 0.0
+        },
+        {
+            "index": 15.0,
+            "x": -0.5,
+            "y": 0.375,
+            "z": 0.0
+        },
+        {
+            "index": 16.0,
+            "x": -0.5,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 17.0,
+            "x": -0.375,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 18.0,
+            "x": -0.25,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 19.0,
+            "x": -0.125,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 20.0,
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index":21.0,
+            "x": 0.125,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 22.0,
+            "x": 0.25,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index":23.0,
+            "x": 0.375,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 24.0,
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.0
+        },
+        {
+            "index": 25.0,
+            "x": 0.5,
+            "y": 0.375,
+            "z": 0.0
+        },
+        {
+            "index": 26.0,
+            "x": 0.5,
+            "y": 0.25,
+            "z": 0.0
+        },
+        {
+            "index": 27.0,
+            "x": 0.5,
+            "y": 0.125,
+            "z": 0.0
+        },
+        {
+            "index": 28.0,
+            "x": 0.5,
+            "y": 0.0,
+            "z": 0.0
+        },
+        {
+            "index": 29.0,
+            "x": 0.5,
+            "y": -0.125,
+            "z": 0.0
+        },
+        {
+            "index": 30.0,
+            "x": 0.5,
+            "y": -0.25,
+            "z": 0.0
+        },
+        {
+            "index": 31.0,
+            "x": 0.5,
+            "y": -0.375,
+            "z": 0.0
+        }
+    ]
+}
