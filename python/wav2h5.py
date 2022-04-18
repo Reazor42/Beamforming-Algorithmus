@@ -2,8 +2,8 @@ from scipy.io import wavfile
 import tables
 
 # change these variables
-wav = ""  # the input wav file
-h5 = ""  # the name of the output h5 file
+wav = "data/data_1/Audio1_4m_40db.wav"  # the input wav file
+h5 = "data/data_1/Audio1_4m_40db.h5"  # the name of the output h5 file
 
 # read data from wav
 fs, data = wavfile.read(wav)
