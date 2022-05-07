@@ -1,12 +1,12 @@
 import math
 
+import PyQt5.QtCore
 import acoular
 import matplotlib.pyplot as plt
 from PIL import ImageSequence
 from PIL import Image
 from celluloid import Camera
 import os
-
 
 def removeWhitePixels(gifpath):
     # using PIL
@@ -54,12 +54,12 @@ mic_config = "config/mic32.xml"  # path of mic configuration
 z_distance = 3  # Kind of the distance to the audio source (kind of)
 resolution = 0.1  # the smaller, the sharper
 frequency = 550  # band center frequency in hz
-samples_per_image = 48000 // 16  # 48000 = 1 Second
+samples_per_image = 48000 // 8  # 48000 = 1 Second
 x_min = -3
 x_max = 3
-y_min = -1.5
-y_max = 1.5
-gif_interval = 1000 / 16
+y_min = -2.1
+y_max = 2.1
+gif_interval = 1000 / 8
 
 ts = acoular.TimeSamples(name=audio_data)
 mg = acoular.MicGeom(from_file=mic_config)
@@ -97,7 +97,7 @@ for a in avgt.result(1):
               interpolation="bicubic")
     # plt.title('Sekunde %i' % (index + 1))
     # plt.savefig("img/Sekunde" + str(index + 1) + ".png", bbox_inches='tight', pad_inches=0, dpi=250)
-    # plt.show()
+    # ax.show()
     print(index + 1, "/", math.floor(ts.numsamples / samples_per_image))
     cam.snap()
     index += 1
