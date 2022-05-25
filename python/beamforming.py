@@ -8,6 +8,7 @@ from PIL import Image
 from celluloid import Camera
 import os
 
+
 def removeWhitePixels(gifpath):
     # using PIL
     img = Image.open(gifpath)
@@ -50,19 +51,25 @@ def removeWhitePixels(gifpath):
 
 audio_data = "data/data_1/Audio1_4m_40db.h5"  # name if .h5 audio data
 video_data = "data/data_1/Video1_4m_40db.mp4"  # name of the video
-mic_config = "config/mic32.xml"  # path of mic configuration
-z_distance = 3  # Kind of the distance to the audio source (kind of)
-resolution = 0.1  # the smaller, the sharper
+mic_config = "config/mic32.xml"  # path of mic configurationich
+z_distance = 1  # Kind of the distance to the audio source (kind of)
+resolution = 0.5  # the smaller, the sharper (but you prob. won't see any difference) (Das hier ist der Grund warum es so schnell berechnet wird... ich weiß nicht wie scharf es in echen usecases sein muss... aber bei der vehicle detection sieht man keinen unterschied)
 frequency = 550  # band center frequency in hz
-samples_per_image = 48000 // 8  # 48000 = 1 Second
+samples_per_image = 48000 // 10  # 48000 = 1 Second
 x_min = -3
 x_max = 3
 y_min = -2.1
 y_max = 2.1
-gif_interval = 1000 / 8
+gif_interval = 1000 / 10
 
 ts = acoular.TimeSamples(name=audio_data)
 mg = acoular.MicGeom(from_file=mic_config)
+# Zeigt das Array an... einfach schließen dann geht es weiter
+plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
+plt.axis('equal');
+for i in range(len(mg.mpos[0])):
+    plt.text(mg.mpos[0][i], mg.mpos[1][i], str(i))
+plt.show()
 print(
     f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq}Hz')
 rg = acoular.RectGrid(x_min=x_min, x_max=x_max,
