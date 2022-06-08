@@ -1,0 +1,10 @@
+32Array Analyse:
+
+MaxFrequenzy: 1372.800000
+MinFrequenzy: 242.679047
+
+medium redundancy: 3.543253
+
+
+beamwidth =  3.5100	// Winkelbreite des Strahls beamwidth (in Grad)
+angles =   -36.9800  -33.4700 //Winkelwerte (in Grad), die die Strahlbreite markieren.
