@@ -22,7 +22,7 @@ def merge_waves(path):
     # find all wav files in the given path
     # then sort the list by length
     # this puts the files 1-32 in the correct order
-    wav_list = glob.glob(path + r"\*.wav")
+    wav_list = glob.glob(path + "*.wav")
     wav_list.sort(key=len)
 
     # read the wav files and store the sound data (which are numpy arrays) of each file in sound_data_list
