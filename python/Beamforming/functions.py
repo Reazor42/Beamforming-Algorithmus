@@ -12,6 +12,8 @@ from PIL import ImageSequence
 from PIL import Image
 from celluloid import Camera
 import os
+import argparse
+from Config import Config
 
 
 # ======================================================================================================
