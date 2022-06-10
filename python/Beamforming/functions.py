@@ -172,9 +172,9 @@ def beamforming(h5_file, config: Config) -> None:
     for a in avgt.result(1):
         r = a.copy()
         pm = r[0].reshape(rg.shape)
-        Lm = acoular.L_p(pm)
+        lm = acoular.L_p(pm)
         plt.axis("off")
-        ax.imshow(Lm.T, vmin=Lm.max() - 5, vmax=Lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
+        ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
         print(index, "/", math.floor(ts.numsamples / samples_per_image))
         cam.snap()
