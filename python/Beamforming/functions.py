@@ -193,6 +193,5 @@ def beamforming(audio_data, video_data):
     remove_white_pixels("img/vid.gif", gif_interval)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     os.system(
-        'ffmpeg -hide_banner -loglevel panic -i {0} -i {1} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {2}'.format(
-            video_data, "img/gifoverlay.gif", "img/overlay.mp4"))
+        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {"img/gifoverlay.gif"} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {"img/overlay.mp4"}')
     print("Done.")
