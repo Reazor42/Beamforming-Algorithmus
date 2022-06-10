@@ -168,7 +168,7 @@ def beamforming(h5_file, config: Config) -> None:
             tic.label2.set_visible(False)
 
     fig.tight_layout(pad=0)
-    index: int = 0
+    index: int = 1
     for a in avgt.result(1):
         r = a.copy()
         pm = r[0].reshape(rg.shape)
@@ -176,10 +176,7 @@ def beamforming(h5_file, config: Config) -> None:
         plt.axis("off")
         ax.imshow(Lm.T, vmin=Lm.max() - 5, vmax=Lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
-        # plt.title('Sekunde %i' % (index + 1))
-        # plt.savefig("img/Sekunde" + str(index + 1) + ".png", bbox_inches='tight', pad_inches=0, dpi=250)
-        # ax.show()
-        print(index + 1, "/", math.floor(ts.numsamples / samples_per_image))
+        print(index, "/", math.floor(ts.numsamples / samples_per_image))
         cam.snap()
         index += 1
     print("Calculation done... merging to gif")
