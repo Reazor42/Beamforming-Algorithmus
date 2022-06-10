@@ -128,17 +128,19 @@ def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
 
 
 # this function does the actual beamforming using the given audio and video data and creates the acoustic map
-def beamforming(audio_data, video_data):
-    mic_config = "config/mic32.xml"  # path of mic configurationich
-    z_distance = 1  # Kind of the distance to the audio source (kind of)
-    resolution = 0.5  # the smaller, the sharper (but you prob. won't see any difference) (Das hier ist der Grund warum es so schnell berechnet wird... ich weiß nicht wie scharf es in echen usecases sein muss... aber bei der vehicle detection sieht man keinen unterschied)
-    frequency = 550  # band center frequency in hz
-    samples_per_image = 48000 // 10  # 48000 = 1 Second
-    x_min = -3
-    x_max = 3
-    y_min = -2.1
-    y_max = 2.1
-    gif_interval = 1000 / 10
+def beamforming(h5_file, config: Config) -> None:
+    mic_config: str = config.array  # path of mic configurationich
+    z_distance: int = config.distance  # Kind of the distance to the audio source (kind of)
+    resolution: float = config.resolution  # the smaller, the sharper
+    frequency: int = config.frequency  # band center frequency in hz
+    samples_per_image: int = 48000 // config.fps  # 48000 = 1 Second
+    x_min: float = config.x_min
+    x_max: float = config.x_max
+    y_min: float = config.y_min
+    y_max: float = config.y_max
+    gif_interval: float = 1000 / config.fps
+    audio_data: str = h5_file
+    video_data: str = config.video
 
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
     mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
