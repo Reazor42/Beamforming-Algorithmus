@@ -18,7 +18,7 @@ import os
 
 
 # this function merges all wav files in the current working directory to one wav file named 'merged.wav'
-def merge_waves(path):
+def merge_waves(path: str) -> str:
     # find all wav files in the given path
     # then sort the list by length
     # this puts the files 1-32 in the correct order
@@ -64,7 +64,7 @@ def merge_waves(path):
 
 
 # this function converts the given wav file to a h5 file named 'sound_data.h5'
-def wav2h5(wav_file):
+def wav2h5(wav_file: str) -> str:
     # define the name of the h5 file to be written
     h5 = "sound_data.h5"
 
@@ -87,7 +87,7 @@ def wav2h5(wav_file):
 
 
 # description
-def remove_white_pixels(gif_path, gif_interval):
+def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
     # using PIL
     img = Image.open(gif_path)
     images = []
@@ -140,28 +140,22 @@ def beamforming(audio_data, video_data):
     y_max = 2.1
     gif_interval = 1000 / 10
 
-    ts = acoular.TimeSamples(name=audio_data)
-    mg = acoular.MicGeom(from_file=mic_config)
-    # Zeigt das Array an... einfach schließen dann geht es weiter
-    plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
-    plt.axis('equal');
-    for i in range(len(mg.mpos[0])):
-        plt.text(mg.mpos[0][i], mg.mpos[1][i], str(i))
-    plt.show()
+    ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
+    mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
     print(
         f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq}Hz')
-    rg = acoular.RectGrid(x_min=x_min, x_max=x_max,
-                          y_min=y_min, y_max=y_max,
-                          z=z_distance, increment=resolution)
-    st = acoular.SteeringVector(grid=rg, mics=mg)
+    rg: acoular.RectGrid = acoular.RectGrid(x_min=x_min, x_max=x_max,
+                                            y_min=y_min, y_max=y_max,
+                                            z=z_distance, increment=resolution)
+    st: acoular.SteeringVector = acoular.SteeringVector(grid=rg, mics=mg)
 
-    bt = acoular.BeamformerTime(source=ts, steer=st)
-    ft = acoular.FiltOctave(source=bt, band=frequency, fraction='Third octave')
-    pt = acoular.TimePower(source=ft)
-    avgt = acoular.TimeAverage(source=pt, naverage=samples_per_image)
+    bt: acoular.BeamformerTime = acoular.BeamformerTime(source=ts, steer=st)
+    ft: acoular.FiltOctave = acoular.FiltOctave(source=bt, band=frequency, fraction='Third octave')
+    pt: acoular.TimePower = acoular.TimePower(source=ft)
+    avgt: acoular.TimeAverage = acoular.TimeAverage(source=pt, naverage=samples_per_image)
 
     fig = plt.figure(figsize=(10, 7))
-    cam = Camera(fig)
+    cam: Camera = Camera(fig)
     ax = fig.add_subplot(111)
     ax.set_aspect('equal')
     for axi in (ax.xaxis, ax.yaxis):
