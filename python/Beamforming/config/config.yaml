@@ -1,0 +1,19 @@
+# the path to the wav files used for merging and converting to h5
+audio: "AUDIO FILES"
+# the path to the video file
+video: "VIDEO FILE"
+# the fps of the beamforming map
+fps: 10
+# the band-center frequency of the sound you want to measure
+frequency: 265
+# distance between array and sound source
+distance: 2
+# resolution of the beamforming map
+resolution: 0.5
+# the dimensions of the RectGrid the size of the canvas
+x_min: -3
+x_max: 3
+y_min: -2.1
+y_max: 2.1
+# path to the microphone xml file
+array: "ARRAY CONFIG"
