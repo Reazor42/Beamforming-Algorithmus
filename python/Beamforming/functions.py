@@ -188,3 +188,29 @@ def beamforming(h5_file, config: Config) -> None:
     os.system(
         f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {"img/gifoverlay.gif"} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {"img/overlay.mp4"}')
     print("Done.")
+
+
+def show_microphone_array(mg: acoular.MicGeom) -> None:
+    plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
+    plt.axis('equal')
+    for i in range(len(mg.mpos[0])):
+        plt.text(mg.mpos[0][i], mg.mpos[1][i], str(i))
+    plt.show()
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Beamforming script for the acoustic camera')
+    parser.add_argument("--audio", "-a", default=None)
+    parser.add_argument("--video", "-v", default=None)
+    parser.add_argument("--array", "-c", default=None)
+    parser.add_argument("--distance", "-d", default=3, type=float)
+    parser.add_argument("--frequency", "-f", default=550, type=int)
+    parser.add_argument("--output", "-o", default=".")
+    parser.add_argument("--fps", default=10, type=int)
+    parser.add_argument("--resolution", default=0.5, type=float)
+    parser.add_argument("--file", default=None)
+    parser.add_argument("--x-min", default=-3, type=float)
+    parser.add_argument("--x-max", default=3, type=float)
+    parser.add_argument("--y-min", default=-2.1, type=float)
+    parser.add_argument("--y-max", default=2.1, type=float)
+    return parser.parse_args()
