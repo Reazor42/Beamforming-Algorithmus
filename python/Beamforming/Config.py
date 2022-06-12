@@ -15,9 +15,11 @@ class Config:
         self.x_max: float = 3.0
         self.y_min: float = -2.1
         self.y_max: float = 2.1
+        self.output: str = "."
 
     def init_values(self, audio: str, video: str, fps: int, frequency: int, distance: int
-                    , array: str, resolution: float, x_min: float, x_max: float, y_min: float, y_max: float):
+                    , array: str, resolution: float, x_min: float, x_max: float, y_min: float, y_max: float,
+                    output: str):
         self.audio: str = audio
         self.video: str = video
         self.fps: int = fps
@@ -29,6 +31,7 @@ class Config:
         self.y_min: float = y_min
         self.y_max: float = y_max
         self.array: str = array
+        self.output: str = output
 
     def parse_from_yaml(self, path: str) -> None:
         with open(path, 'r') as yaml_file:
@@ -44,3 +47,4 @@ class Config:
             self.y_min: float = data["y_min"]
             self.y_max: float = data["y_max"]
             self.array: str = data["array"]
+            self.output: str = data["output"]

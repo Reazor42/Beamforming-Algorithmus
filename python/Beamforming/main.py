@@ -7,7 +7,7 @@ if __name__ == '__main__':
     if args.file is None:
         config.init_values(args.audio, args.video, args.fps, args.frequency, args.distance, args.array, args.resolution,
                            args.x_min,
-                           args.x_max, args.y_min, args.y_max)
+                           args.x_max, args.y_min, args.y_max, args.output)
     else:
         config.parse_from_yaml(args.file)
 
