@@ -1,0 +1,7 @@
+Array Analysis Data of 32-Mic-Array: 
+
+MinFrequenzy: 380.746215 Hz
+MaxFrequenzy: 2745.600000 Hz
+Medium Redundancy: 3.447811
+Beamwidth: 12.760000 (in degrees)
+Angles: -6.380000, 6.380000 (in degrees)
