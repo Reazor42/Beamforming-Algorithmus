@@ -117,7 +117,7 @@ def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
         except EOFError:
             continue
 
-    path = os.path.dirname(gif_path) + "/gifoverlay.gif"
+    path = os.path.dirname(gif_path) + "gifoverlay.gif"
     # hier gucken
     images[0].save(path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval, loop=0,
                    disposal=2,
@@ -143,6 +143,7 @@ def beamforming(h5_file, config: Config) -> None:
     gif_interval: float = 1000 / config.fps
     audio_data: str = h5_file
     video_data: str = config.video
+    out_dir: str = config.output
 
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
     mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
@@ -178,17 +179,17 @@ def beamforming(h5_file, config: Config) -> None:
         plt.axis("off")
         ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
-        print(index, "/", math.floor(ts.numsamples / samples_per_image))
+        print(index, "/", math.floor(ts.numsamples / samples_per_image) - 1)
         cam.snap()
         index += 1
     print("Calculation done... merging to gif")
     animation = cam.animate(blit=True, repeat=False, interval=gif_interval)
-    animation.save("img/vid.gif", writer='imagemagick')
+    animation.save(f"{out_dir}vid.gif", writer='imagemagick')
     print("Processing gif")
-    remove_white_pixels("img/vid.gif", gif_interval)
+    remove_white_pixels(f"{out_dir}vid.gif", gif_interval)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     os.system(
-        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {"img/gifoverlay.gif"} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {"img/overlay.mp4"}')
+        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {out_dir}gifoverlay.gif -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {out_dir}overlay.mp4')
     print("Done.")
 
 
