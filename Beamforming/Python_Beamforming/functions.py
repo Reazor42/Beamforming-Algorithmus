@@ -179,7 +179,7 @@ def beamforming(h5_file, config: Config) -> None:
         plt.axis("off")
         ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
-        print(index, "/", math.floor(ts.numsamples / samples_per_image) - 1)
+        print(index, "/", math.floor(ts.numsamples / samples_per_image))
         cam.snap()
         index += 1
     print("Calculation done... merging to gif")
