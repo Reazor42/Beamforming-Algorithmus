@@ -1,4 +1,4 @@
-function PlotMSL(pattern)
+function MSL =  CalcMSL(pattern)
     [maxima , maxpos] = max(pattern ,[], 'omitnan');
     for f = 1:size(pattern,2)
         if isnan(maxima(f))
@@ -21,7 +21,5 @@ function PlotMSL(pattern)
             MSL(frequencys(f)) = NaN;
         end
     end
-
-    plot(MSL);
 end
 

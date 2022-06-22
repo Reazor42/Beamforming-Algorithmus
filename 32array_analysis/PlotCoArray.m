@@ -1,4 +1,4 @@
-function PlotCoArray(arrayPoints)
+function [rm, coarray] = PlotCoArray(arrayPoints)
     arraySize = size(arrayPoints, 1);
     distances = zeros(arraySize*arraySize, 3);
 
@@ -13,7 +13,8 @@ function PlotCoArray(arrayPoints)
     coarray = [C,a_counts];
 
      rm = (arraySize*arraySize)/(size(C,1));
-     scatter(coarray(:,1), coarray(:,2), coarray(:,4)*10);
+     figure("Name",'Microphone Co-Array Geometry (in meter)')
+     coarray = scatter(coarray(:,1), coarray(:,2), coarray(:,4)*10);
      fprintf('medium redundancy: %f\n', rm);
 end
 
