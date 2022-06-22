@@ -117,7 +117,7 @@ def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
         except EOFError:
             continue
 
-    path = os.path.dirname(gif_path) + "gifoverlay.gif"
+    path = os.path.dirname(gif_path) + "/gifoverlay.gif"
     # hier gucken
     images[0].save(path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval, loop=0,
                    disposal=2,
