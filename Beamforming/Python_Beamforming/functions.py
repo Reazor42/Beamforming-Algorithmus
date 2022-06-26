@@ -4,8 +4,7 @@ from scipy.io import wavfile
 import numpy as np
 import tables
 
-import PyQt5.QtCore
-import math
+import PyQt5.QtCore #This is needed in some linux systems to work
 import acoular
 import matplotlib.pyplot as plt
 from PIL import ImageSequence
