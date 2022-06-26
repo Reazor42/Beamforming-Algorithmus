@@ -1,0 +1,37 @@
+Dokumentation zur MATLAB Array Analyse:
+
+MATLAB Requirements: Phased Array Toolbox
+
+MATLAB ist neben Python eine Alternative, um Daten zu verarbeiten und zu visualisieren.
+Dieses Skript bietet die Funktion, die Arraygeometrie einer akustischen Kamera zu Analysieren.
+Zudem werden die ausgewerteten Kenngrößen visualisiert oder in eine Textdatei im Verzeichnis "32array_analysis/ArrayAnalysis/" mit dem Dateinamen "ArrayData.txt" abgelegt.
+Das Skript verfügt im Code zudem über Ansätze, zur Einwicklung von Programmlogik einer Akustischen Kamera. Dieser Versuch ist nicht funktionsfähig und benötigt eine weitere Ausarbeitung.
+
+Im Ersten Schritt "Constants" werden alle benötigten Werte definiert, die sich nicht verändern, wie bspw. die Schallgeschwindigkeit.
+Die Konstante "frequenzy" gibt die Frequenz an, in der die Signale abgetastet werden.
+Die Konstante "samlerate" gibt die Abtastrate der Audioaufnahmen an (standardmäßig 44,1 oder 48 kHz).
+
+Der nächste Schritt "Create Microphone Array via json" liest die Werte bzw. Koordinatenpunkte jedes angegebenen Mikrofons aus und schreibt diese in eine Matrix.
+Bei einer neuen Arraygeometrie oder zusätzlichen Mikrofonen, muss diese Json-Datei händisch angelegt werden. Ein Beispielformat befindet sich in "32array_analysis/data/MicrophoneArrayData.json"
+
+Mit Hilfe der ausgelesenen Daten kann die Array Geometrie analysiert werden.
+Diese Geometrie wird zuerst visualisiert und im Verzeichnis "32array_analysis/ArrayAnalysis/" als "MicArray.png" abgespeichert.
+Vorerst wird mit der Methode "CalcFrequencys" der Frequenzbereich bestimmt, in welcher das Mikrofonarray Signale erkennen kann.
+Die Methode benötigt die Mikrofonkoodinaten in Matrixformat und die Konstante der Schallgeschwindigkeit, um den Frequenzbereich anschließend zu berechnen.
+Die errechneten Werte werden in die Datei "ArrayData.txt" geschrieben.
+
+Danach wird das Co-Array mit der Methode "PlotCoArray" errechneten. Die Methode benötigt lediglich die Mikrofonkoodinaten und errechneten daraus jeden Abstand jedes Mikrofon zueinander und zu sich selbst.
+Die Methode visualisiert das Co-Array und speichert schreibt es in das Verzeichnis "32array_analysis/ArrayAnalysis/" als "CoArray.png" ab.
+Zudem gibt die Methode die Medium Redundancy des Arrays zurück und schreibt diese in die zuvor erwähnte Textdatei.
+
+Anschließend wird das Pattern erstellt und in MATLAB angezeigt. Das erfolgt mithilfe der Methode "PlotBeampattern", 
+welche die Werte der Mikrofonkoordinaten, die Schallgeschwindigkeit und die Abtastfrequenz benötigt.
+In dieser Methode wird zusätzlich die Strahlbreite (Beamwidth) errechneten und angezeigt, genauso wie das Beampattern.
+Das Beampattern wird in Form eines 3D-Formates innerhalb eines Koordinatensystems visualisiert. Die Koordinatenachsen werden in Dezibel angegeben.
+Die Beamwidth wird in einem Diagramm visualisiert, welches die entsprechenden Lobes zeigen. Die Hauptkeule wird von zwei Werten eingeschlossen, diese werden in Grad angegeben.
+Der Wert für die Beamwidth wird ebenfalls in Grad angegeben.
+Die Methode "PlotBeampattern" gibt somit das Pattern, als auch die Strahlbreite mit einschließenden Winkeln der Hauptkeule zurück.
+Die Werte der Strahlbreite und der einschließenden Winkel der Hauptkeule werden ebenfalls in die Textdatei geschrieben.
+
+Weitere Informationen über die Methoden und Beampattern in der Arbeit von Leon Müller:
+https://www.researchgate.net/publication/350285885_Development_of_a_Real-Time_Low-Budget_Acoustic_Camera_on_an_FPGA
