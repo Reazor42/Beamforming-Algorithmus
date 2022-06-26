@@ -14,6 +14,8 @@ from celluloid import Camera
 import os
 import argparse
 from Config import Config
+from os.path import join
+from tqdm import tqdm
 
 
 # ======================================================================================================
@@ -24,7 +26,7 @@ def merge_waves(path: str) -> str:
     # find all wav files in the given path
     # then sort the list by length
     # this puts the files 1-32 in the correct order
-    wav_list = glob.glob(path + "*.wav")
+    wav_list = glob.glob(join(path, "*.wav"))
     wav_list.sort(key=len)
 
     # read the wav files and store the sound data (which are numpy arrays) of each file in sound_data_list
@@ -81,6 +83,7 @@ def wav2h5(wav_file: str) -> str:
                             byteorder=None, createparents=False, obj=data)
     acoularh5.set_node_attr('/time_data', 'sample_freq', fs)
     acoularh5.close()
+    os.remove(wav_file)
 
     return h5
 
@@ -89,7 +92,7 @@ def wav2h5(wav_file: str) -> str:
 
 
 # description
-def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
+def remove_white_pixels(gif_path: str, gif_interval: float, processed_gif_path: str):
     # using PIL
     img = Image.open(gif_path)
     images = []
@@ -117,13 +120,10 @@ def remove_white_pixels(gif_path: str, gif_interval: float) -> str:
         except EOFError:
             continue
 
-    path = os.path.dirname(gif_path) + "/gifoverlay.gif"
-    # hier gucken
-    images[0].save(path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval, loop=0,
+    images[0].save(processed_gif_path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval,
+                   loop=0,
                    disposal=2,
                    transparency=0)
-
-    return path
 
 
 # ======================================================================================================
@@ -148,7 +148,7 @@ def beamforming(h5_file, config: Config) -> None:
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
     mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
     print(
-        f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq}Hz')
+        f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq} Hz')
     rg: acoular.RectGrid = acoular.RectGrid(x_min=x_min, x_max=x_max,
                                             y_min=y_min, y_max=y_max,
                                             z=z_distance, increment=resolution)
@@ -171,25 +171,30 @@ def beamforming(h5_file, config: Config) -> None:
             tic.label2.set_visible(False)
 
     fig.tight_layout(pad=0)
-    index: int = 1
-    for a in avgt.result(1):
+    number_of_total_frames: int = ts.numsamples // samples_per_image
+    for a in tqdm(avgt.result(1), desc="Bilder werden berechnet", total=number_of_total_frames, unit="Bilder"):
         r = a.copy()
         pm = r[0].reshape(rg.shape)
         lm = acoular.L_p(pm)
         plt.axis("off")
         ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
-        print(index, "/", math.floor(ts.numsamples / samples_per_image))
         cam.snap()
-        index += 1
     print("Calculation done... merging to gif")
+    unprocessed_gif_path: str = join(out_dir, "vid.gif")
+    processed_gif_path: str = join(out_dir, "gifoverlay.gif")
+
     animation = cam.animate(blit=True, repeat=False, interval=gif_interval)
-    animation.save(f"{out_dir}vid.gif", writer='imagemagick')
+    animation.save(unprocessed_gif_path, writer='imagemagick')
     print("Processing gif")
-    remove_white_pixels(f"{out_dir}vid.gif", gif_interval)
+    remove_white_pixels(unprocessed_gif_path, gif_interval, processed_gif_path)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     os.system(
-        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {out_dir}gifoverlay.gif -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {out_dir}overlay.mp4')
+        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
+    # removing temporary files
+    os.remove(unprocessed_gif_path)
+    os.remove(processed_gif_path)
+    os.remove("sound_data.h5")
     print("Done.")
 
 
