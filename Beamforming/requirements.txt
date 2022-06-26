@@ -56,6 +56,7 @@ tables==3.7.0
 threadpoolctl==3.1.0
 tomlkit==0.7.2
 traits==6.3.2
+tqdm==4.64.0
 urllib3==1.26.6
 virtualenv==20.7.2
 virtualenv-clone==0.5.6
