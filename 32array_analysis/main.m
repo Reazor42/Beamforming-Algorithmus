@@ -8,11 +8,11 @@ download website: https://www.researchgate.net/publication/350285885_Development
 %}
 %% 0.) CONSTANTS
 c = 343.2; % speed of sound
-frequenzy = 265;
+frequenzy = 1000;
 samplerate = 48000.0;
 arrayDataFileName ='ArrayAnalysis/ArrayData.txt';
 %% 1. Create Microphone Array via json
-fileName = 'data/MicrophoneArrayData_Alternative2.json'; % filename in JSON extension
+fileName = 'data/MicrophoneArrayData.json'; % filename in JSON extension
 fid = fopen(fileName); % Opening the file
 raw = fread(fid,inf); % Reading the contents
 str = char(raw'); % Transformation
