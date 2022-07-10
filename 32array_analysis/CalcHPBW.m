@@ -1,4 +1,4 @@
-function [HPBW] = PlotHPBW(pattern)
+function HPBW = CalcHPBW(pattern)
     [maxima, maxpos] = max(pattern, [], 'omitnan');
 
     for f = 1:size(pattern, 2)

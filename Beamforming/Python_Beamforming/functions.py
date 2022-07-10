@@ -4,25 +4,28 @@ from scipy.io import wavfile
 import numpy as np
 import tables
 
-import PyQt5.QtCore
-import math
+import PyQt5.QtCore  # This is needed in some linux systems to work
 import acoular
 import matplotlib.pyplot as plt
 from PIL import ImageSequence
 from PIL import Image
 from celluloid import Camera
 import os
+import argparse
+from Config import Config
+from os.path import join
+from tqdm import tqdm
 
 
 # ======================================================================================================
 
 
 # this function merges all wav files in the current working directory to one wav file named 'merged.wav'
-def merge_waves(path):
+def merge_waves(path: str) -> str:
     # find all wav files in the given path
     # then sort the list by length
     # this puts the files 1-32 in the correct order
-    wav_list = glob.glob(path + r"\*.wav")
+    wav_list = glob.glob(join(path, "*.wav"))
     wav_list.sort(key=len)
 
     # read the wav files and store the sound data (which are numpy arrays) of each file in sound_data_list
@@ -64,7 +67,7 @@ def merge_waves(path):
 
 
 # this function converts the given wav file to a h5 file named 'sound_data.h5'
-def wav2h5(wav_file):
+def wav2h5(wav_file: str) -> str:
     # define the name of the h5 file to be written
     h5 = "sound_data.h5"
 
@@ -79,6 +82,7 @@ def wav2h5(wav_file):
                             byteorder=None, createparents=False, obj=data)
     acoularh5.set_node_attr('/time_data', 'sample_freq', fs)
     acoularh5.close()
+    os.remove(wav_file)
 
     return h5
 
@@ -86,8 +90,8 @@ def wav2h5(wav_file):
 # ======================================================================================================
 
 
-# description
-def remove_white_pixels(gif_path, gif_interval):
+# Used to remove the dark pixels in the background
+def remove_white_dark(gif_path: str, gif_interval: float, processed_gif_path: str):
     # using PIL
     img = Image.open(gif_path)
     images = []
@@ -115,53 +119,47 @@ def remove_white_pixels(gif_path, gif_interval):
         except EOFError:
             continue
 
-    path = os.path.dirname(gif_path) + "/gifoverlay.gif"
-    # hier gucken
-    images[0].save(path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval, loop=0,
+    images[0].save(processed_gif_path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval,
+                   loop=0,
                    disposal=2,
                    transparency=0)
-
-    return path
 
 
 # ======================================================================================================
 
 
 # this function does the actual beamforming using the given audio and video data and creates the acoustic map
-def beamforming(audio_data, video_data):
-    mic_config = "config/mic32.xml"  # path of mic configurationich
-    z_distance = 1  # Kind of the distance to the audio source (kind of)
-    resolution = 0.5  # the smaller, the sharper (but you prob. won't see any difference) (Das hier ist der Grund warum es so schnell berechnet wird... ich weiß nicht wie scharf es in echen usecases sein muss... aber bei der vehicle detection sieht man keinen unterschied)
-    frequency = 550  # band center frequency in hz
-    samples_per_image = 48000 // 10  # 48000 = 1 Second
-    x_min = -3
-    x_max = 3
-    y_min = -2.1
-    y_max = 2.1
-    gif_interval = 1000 / 10
+def beamforming(h5_file, config: Config) -> None:
+    mic_config: str = config.array  # path of mic configurationich
+    z_distance: int = config.distance  # Kind of the distance to the audio source (kind of)
+    resolution: float = config.resolution  # the smaller, the sharper
+    frequency: int = config.frequency  # band center frequency in hz
+    samples_per_image: int = 48000 // config.fps  # 48000 = 1 Second
+    x_min: float = config.x_min
+    x_max: float = config.x_max
+    y_min: float = config.y_min
+    y_max: float = config.y_max
+    gif_interval: float = 1000 / config.fps
+    audio_data: str = h5_file
+    video_data: str = config.video
+    out_dir: str = config.output
 
-    ts = acoular.TimeSamples(name=audio_data)
-    mg = acoular.MicGeom(from_file=mic_config)
-    # Zeigt das Array an... einfach schließen dann geht es weiter
-    plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
-    plt.axis('equal');
-    for i in range(len(mg.mpos[0])):
-        plt.text(mg.mpos[0][i], mg.mpos[1][i], str(i))
-    plt.show()
+    ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
+    mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
     print(
-        f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq}Hz')
-    rg = acoular.RectGrid(x_min=x_min, x_max=x_max,
-                          y_min=y_min, y_max=y_max,
-                          z=z_distance, increment=resolution)
-    st = acoular.SteeringVector(grid=rg, mics=mg)
+        f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq} Hz')
+    rg: acoular.RectGrid = acoular.RectGrid(x_min=x_min, x_max=x_max,
+                                            y_min=y_min, y_max=y_max,
+                                            z=z_distance, increment=resolution)
+    st: acoular.SteeringVector = acoular.SteeringVector(grid=rg, mics=mg)
 
-    bt = acoular.BeamformerTime(source=ts, steer=st)
-    ft = acoular.FiltOctave(source=bt, band=frequency, fraction='Third octave')
-    pt = acoular.TimePower(source=ft)
-    avgt = acoular.TimeAverage(source=pt, naverage=samples_per_image)
+    bt: acoular.BeamformerTime = acoular.BeamformerTime(source=ts, steer=st)
+    ft: acoular.FiltOctave = acoular.FiltOctave(source=bt, band=frequency, fraction='Third octave')
+    pt: acoular.TimePower = acoular.TimePower(source=ft)
+    avgt: acoular.TimeAverage = acoular.TimeAverage(source=pt, naverage=samples_per_image)
 
     fig = plt.figure(figsize=(10, 7))
-    cam = Camera(fig)
+    cam: Camera = Camera(fig)
     ax = fig.add_subplot(111)
     ax.set_aspect('equal')
     for axi in (ax.xaxis, ax.yaxis):
@@ -172,27 +170,54 @@ def beamforming(audio_data, video_data):
             tic.label2.set_visible(False)
 
     fig.tight_layout(pad=0)
-    index: int = 0
-    for a in avgt.result(1):
+    number_of_total_frames: int = ts.numsamples // samples_per_image
+    for a in tqdm(avgt.result(1), desc="Bilder werden berechnet", total=number_of_total_frames, unit="Bilder"):
         r = a.copy()
         pm = r[0].reshape(rg.shape)
-        Lm = acoular.L_p(pm)
+        lm = acoular.L_p(pm)
         plt.axis("off")
-        ax.imshow(Lm.T, vmin=Lm.max() - 5, vmax=Lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
+        ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
                   interpolation="bicubic")
-        # plt.title('Sekunde %i' % (index + 1))
-        # plt.savefig("img/Sekunde" + str(index + 1) + ".png", bbox_inches='tight', pad_inches=0, dpi=250)
-        # ax.show()
-        print(index + 1, "/", math.floor(ts.numsamples / samples_per_image))
         cam.snap()
-        index += 1
     print("Calculation done... merging to gif")
+    unprocessed_gif_path: str = join(out_dir, "vid.gif")
+    processed_gif_path: str = join(out_dir, "gifoverlay.gif")
+
     animation = cam.animate(blit=True, repeat=False, interval=gif_interval)
-    animation.save("img/vid.gif", writer='imagemagick')
+    animation.save(unprocessed_gif_path, writer='imagemagick')
     print("Processing gif")
-    remove_white_pixels("img/vid.gif", gif_interval)
+    remove_white_dark(unprocessed_gif_path, gif_interval, processed_gif_path)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     os.system(
-        'ffmpeg -hide_banner -loglevel panic -i {0} -i {1} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {2}'.format(
-            video_data, "img/gifoverlay.gif", "img/overlay.mp4"))
+        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
+    # removing temporary files
+    os.remove(unprocessed_gif_path)
+    os.remove(processed_gif_path)
+    os.remove("sound_data.h5")
     print("Done.")
+
+
+def show_microphone_array(mg: acoular.MicGeom) -> None:
+    plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
+    plt.axis('equal')
+    for i in range(len(mg.mpos[0])):
+        plt.text(mg.mpos[0][i], mg.mpos[1][i], str(i))
+    plt.show()
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Beamforming script for the acoustic camera')
+    parser.add_argument("--audio", "-a", default=None)
+    parser.add_argument("--video", "-v", default=None)
+    parser.add_argument("--array", "-c", default=None)
+    parser.add_argument("--distance", "-d", default=3, type=float)
+    parser.add_argument("--frequency", "-f", default=550, type=int)
+    parser.add_argument("--output", "-o", default=".")
+    parser.add_argument("--fps", default=10, type=int)
+    parser.add_argument("--resolution", default=0.5, type=float)
+    parser.add_argument("--file", default=None)
+    parser.add_argument("--x-min", default=-3, type=float)
+    parser.add_argument("--x-max", default=3, type=float)
+    parser.add_argument("--y-min", default=-2.1, type=float)
+    parser.add_argument("--y-max", default=2.1, type=float)
+    return parser.parse_args()
