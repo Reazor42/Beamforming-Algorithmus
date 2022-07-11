@@ -32,15 +32,14 @@ public class BeamformingHandler {
 	public void runBeamforming() {
 		
 		try {
-			String pythonExePath = "Python_Interpreter/python.exe";
 			String pythonScriptPath = "C:/Users/marc.andresen/Documents/GitHub/Beamforming-Algorithmus/Beamforming/Python_Beamforming/main.py";
 			
 			ProcessBuilder pb;			
 			if(configFilePath != null) {
-				pb = new ProcessBuilder(pythonExePath, pythonScriptPath, "--file", configFilePath).inheritIO();
+				pb = new ProcessBuilder("python", pythonScriptPath, "--file", configFilePath).inheritIO();
 			}
 			else {
-				pb = new ProcessBuilder(pythonExePath, pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath).inheritIO();
+				pb = new ProcessBuilder("python" , pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath).inheritIO();
 			}
 			
 			Process p = pb.start();
