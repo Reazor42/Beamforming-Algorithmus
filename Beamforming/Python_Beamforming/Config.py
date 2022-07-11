@@ -36,7 +36,7 @@ class Config:
     def parse_from_yaml(self, path: str) -> None:
         with open(path, 'r') as yaml_file:
             data: dict = yaml.safe_load(yaml_file)
-            self.audio = data["audio"]
+            self.audio: str = data["audio"]
             self.video: str = data["video"]
             self.fps: int = data["fps"]
             self.frequency: int = data["frequency"]
