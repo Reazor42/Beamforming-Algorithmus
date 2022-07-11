@@ -15,8 +15,8 @@ if __name__ == '__main__':
     video_name = config.video
 
     print("merging waves")
-    merged_wav = functions.merge_waves(path)
+    #merged_wav = functions.merge_waves(path)
     print("converting to h5")
-    h5 = functions.wav2h5(merged_wav)
+    h5 = functions.wav2h5(path)
     print("starting beamforming")
     functions.beamforming(h5, config)

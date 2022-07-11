@@ -9,13 +9,23 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
 
 <AnchorPane minHeight="600.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainWindowController">
    <children>
       <SplitPane dividerPositions="0.5311317186164898" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-            <StackPane prefHeight="150.0" prefWidth="200.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <VBox alignment="CENTER" layoutX="64.0" layoutY="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label text="Ergebnis:" />
+                        <MediaView fx:id="videoView" fitHeight="400.0" fitWidth="400.0" />
+                        <Button fx:id="playVideoButton" disable="true" mnemonicParsing="false" onAction="#playVideo" text="Video abspielen" />
+                     </children>
+                  </VBox>
+               </children></AnchorPane>
+            <StackPane minWidth="300.0" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <VBox fx:id="chooseConfigModeVBox" alignment="CENTER" spacing="10.0" visible="false">
                      <children>
@@ -24,12 +34,12 @@
                         <Button fx:id="submitConfigModeButton" disable="true" mnemonicParsing="false" onAction="#loadConfigMode" text="OK" />
                      </children>
                   </VBox>
-                  <VBox fx:id="autoConfigVBox" alignment="CENTER" spacing="10.0" visible="false">
+                  <VBox fx:id="autoConfigVBox" alignment="CENTER" spacing="10.0">
                      <children>
                         <Label text="Pfad zur Konfigurationsdatei eingeben:" />
                         <HBox alignment="CENTER">
                            <children>
-                              <TextField fx:id="configFilePathField" prefHeight="25.0" prefWidth="246.0" />
+                              <TextField fx:id="configFilePathField" prefHeight="25.0" prefWidth="250.0" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" spacing="25.0">
@@ -40,14 +50,14 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0">
+                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0" visible="false">
                      <children>
                         <VBox alignment="CENTER" spacing="10.0">
                            <children>
                               <Label text="Pfad zu den Audiodateien:" />
                               <HBox alignment="CENTER">
                                  <children>
-                                    <TextField fx:id="audioPathField" prefHeight="25.0" prefWidth="200.0" />
+                                    <TextField fx:id="audioPathField" prefHeight="25.0" prefWidth="250.0" />
                                  </children>
                               </HBox>
                            </children>
@@ -57,7 +67,7 @@
                               <Label text="Pfad zu der Videodatei:" />
                               <HBox alignment="CENTER">
                                  <children>
-                                    <TextField fx:id="videoPathField" prefHeight="25.0" prefWidth="200.0" />
+                                    <TextField fx:id="videoPathField" prefHeight="25.0" prefWidth="250.0" />
                                  </children>
                               </HBox>
                            </children>
@@ -67,7 +77,7 @@
                               <Label text="Pfad zu der Mikrofonkonfigurationsdatei:" />
                               <HBox alignment="CENTER">
                                  <children>
-                                    <TextField fx:id="micPathField" prefHeight="25.0" prefWidth="200.0" />
+                                    <TextField fx:id="micPathField" prefHeight="25.0" prefWidth="250.0" />
                                  </children>
                               </HBox>
                            </children>
@@ -80,6 +90,7 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <Button fx:id="startBeamformingButton" mnemonicParsing="false" onAction="#startBeamforming" text="Beamforming starten" visible="false" />
                </children>
             </StackPane>
         </items>
