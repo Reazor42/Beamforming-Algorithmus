@@ -193,7 +193,6 @@ def beamforming(h5_file, config: Config) -> None:
     # removing temporary files
     os.remove(unprocessed_gif_path)
     os.remove(processed_gif_path)
-    os.remove("sound_data.h5")
     print("Done.")
 
 
