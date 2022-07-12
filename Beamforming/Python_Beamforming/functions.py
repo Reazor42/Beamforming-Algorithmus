@@ -91,7 +91,7 @@ def wav2h5(wav_file: str) -> str:
 
 
 # Used to remove the dark pixels in the background
-def remove_white_dark(gif_path: str, gif_interval: float, processed_gif_path: str):
+def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_path: str):
     # using PIL
     img = Image.open(gif_path)
     images = []
@@ -147,7 +147,7 @@ def beamforming(h5_file, config: Config) -> None:
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
     mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
     print(
-        f'Bearbeite Audio mit: {ts.numchannels} Channeln; {ts.numsamples} Samples und einer Sample-Frequenz von {ts.sample_freq} Hz')
+        f'Using audio with: {ts.numchannels} channels; {ts.numsamples} samples and a sample frequency of {ts.sample_freq} Hz')
     rg: acoular.RectGrid = acoular.RectGrid(x_min=x_min, x_max=x_max,
                                             y_min=y_min, y_max=y_max,
                                             z=z_distance, increment=resolution)
@@ -171,7 +171,7 @@ def beamforming(h5_file, config: Config) -> None:
 
     fig.tight_layout(pad=0)
     number_of_total_frames: int = ts.numsamples // samples_per_image
-    for a in tqdm(avgt.result(1), desc="Bilder werden berechnet", total=number_of_total_frames, unit="Bilder"):
+    for a in tqdm(avgt.result(1), desc="Computing images: ", total=number_of_total_frames, unit="images"):
         r = a.copy()
         pm = r[0].reshape(rg.shape)
         lm = acoular.L_p(pm)
@@ -185,8 +185,7 @@ def beamforming(h5_file, config: Config) -> None:
 
     animation = cam.animate(blit=True, repeat=False, interval=gif_interval)
     animation.save(unprocessed_gif_path, writer='imagemagick')
-    print("Processing gif")
-    remove_white_dark(unprocessed_gif_path, gif_interval, processed_gif_path)
+    remove_dark_background(unprocessed_gif_path, gif_interval, processed_gif_path)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     os.system(
         f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
