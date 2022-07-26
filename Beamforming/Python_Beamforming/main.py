@@ -5,6 +5,10 @@ if __name__ == '__main__':
     args = functions.parse_arguments()
     config = Config()
     if args.file is None:
+        if args.audio or args.video or args.array is None:
+            raise Exception(
+                "You have to provide at least the audio path the video path and the array config path or a config "
+                "file as command line parameters!")
         config.init_values(args.audio, args.video, args.fps, args.frequency, args.distance, args.array, args.resolution,
                            args.x_min,
                            args.x_max, args.y_min, args.y_max, args.output)
