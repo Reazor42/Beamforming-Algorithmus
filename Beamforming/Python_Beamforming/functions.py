@@ -89,10 +89,14 @@ def wav2h5(wav_file: str) -> str:
 
 # ======================================================================================================
 
+def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_path: str) -> None:
+    """
+    Removes the dark background pixels of the gif image.
 
-# Used to remove the dark pixels in the background
-def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_path: str):
-    # using PIL
+    :param gif_path: path to the unprocessed gif file
+    :param gif_interval: the fps for the processed gif file (should correspond with the fps of the beamforming)
+    :param processed_gif_path: path where the processed gif file should be saved
+    """
     img = Image.open(gif_path)
     images = []
 
@@ -104,15 +108,14 @@ def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_pat
             img_mod = frame.convert("RGBA")
             datas = img_mod.getdata()
 
-            newData = []
-            # Currently only peaks stored but rest of the plot is white, so remove white pixels
+            new_data = []
             for item in datas:
                 if item[0] == 0 and item[1] == 0 and item[2] == 0:
-                    newData.append((255, 255, 255, 0))
+                    new_data.append((255, 255, 255, 0))
                 else:
-                    newData.append(item)
+                    new_data.append(item)
 
-            img_mod.putdata(newData)
+            img_mod.putdata(new_data)
 
             images.append(img_mod)
 
@@ -128,8 +131,15 @@ def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_pat
 # ======================================================================================================
 
 
-# this function does the actual beamforming using the given audio and video data and creates the acoustic map
 def beamforming(h5_file, config: Config) -> None:
+    """
+    Does the beamforming. Reads the parameters out of the config and generates the acoustic map out of it.
+    It will generate a .mp4 video file once it finished which shows the acoustic map merged with the provided video.
+
+    :param h5_file:the path to the hdf5-File
+    :param config: an instance of the Config class
+    """
+    # Stage 1
     mic_config: str = config.array  # path of mic configurationich
     z_distance: int = config.distance  # Kind of the distance to the audio source (kind of)
     resolution: float = config.resolution  # the smaller, the sharper
@@ -144,6 +154,7 @@ def beamforming(h5_file, config: Config) -> None:
     video_data: str = config.video
     out_dir: str = config.output
 
+    # Stage 2
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
     mg: acoular.MicGeom = acoular.MicGeom(from_file=mic_config)
     print(
@@ -158,6 +169,7 @@ def beamforming(h5_file, config: Config) -> None:
     pt: acoular.TimePower = acoular.TimePower(source=ft)
     avgt: acoular.TimeAverage = acoular.TimeAverage(source=pt, naverage=samples_per_image)
 
+    # Stage 3
     fig = plt.figure(figsize=(10, 7))
     cam: Camera = Camera(fig)
     ax = fig.add_subplot(111)
@@ -170,6 +182,7 @@ def beamforming(h5_file, config: Config) -> None:
             tic.label2.set_visible(False)
 
     fig.tight_layout(pad=0)
+    # Stage 4
     number_of_total_frames: int = ts.numsamples // samples_per_image
     for a in tqdm(avgt.result(1), desc="Computing images: ", total=number_of_total_frames, unit="images"):
         r = a.copy()
@@ -185,8 +198,10 @@ def beamforming(h5_file, config: Config) -> None:
 
     animation = cam.animate(blit=True, repeat=False, interval=gif_interval)
     animation.save(unprocessed_gif_path, writer='imagemagick')
+    # Stage 5
     remove_dark_background(unprocessed_gif_path, gif_interval, processed_gif_path)
     # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
+    # Stage 6
     os.system(
         f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
     # removing temporary files
@@ -196,6 +211,12 @@ def beamforming(h5_file, config: Config) -> None:
 
 
 def show_microphone_array(mg: acoular.MicGeom) -> None:
+    """
+    Opens a matplotlib graph which visualises the current numbered microphone arrangement.
+    This function is currently not used in the code. It was used for testing purposes.
+
+    :param mg: The microphone array configuration of acoular
+    """
     plt.plot(mg.mpos[0], mg.mpos[1], 'o', )
     plt.axis('equal')
     for i in range(len(mg.mpos[0])):
@@ -204,6 +225,11 @@ def show_microphone_array(mg: acoular.MicGeom) -> None:
 
 
 def parse_arguments() -> argparse.Namespace:
+    """
+    Reads and sets the command line parameters from the command line.
+
+    :return: argparse.Namespace: Object with the provided command line parameters
+    """
     parser = argparse.ArgumentParser(description='Beamforming script for the acoustic camera')
     parser.add_argument("--audio", "-a", default=None)
     parser.add_argument("--video", "-v", default=None)
