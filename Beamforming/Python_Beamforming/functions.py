@@ -20,11 +20,16 @@ from tqdm import tqdm
 # ======================================================================================================
 
 
-# this function merges all wav files in the current working directory to one wav file named 'merged.wav'
 def merge_waves(path: str) -> str:
+    """
+    Merges the different WAV-Files into one WAV-File with multiple channels. The resulting WAV-File is named 'merged.wav'
+
+    :param path: Directory with the WAV-Files.
+    :return: name of the new multichannel WAV-File (currently merged.wav)
+    """
     # find all wav files in the given path
-    # then sort the list by length
-    # this puts the files 1-32 in the correct order
+    # then sort the list by length in descending order
+    # this puts the files 1-32 in the correct order because the first microphone recordings are a bit shorter than the last ones
     wav_list = glob.glob(join(path, "*.wav"))
     wav_list.sort(key=len)
 
@@ -34,7 +39,7 @@ def merge_waves(path: str) -> str:
         samplerate, data = wavfile.read(f)
         sound_data_list.append(data)
 
-    # since the length of the sound data arrays may be slightly different, they must be cut to the same length
+    # since the length of the sound data arrays is slightly different, they must be cut to the same length
     # therefore the length of all arrays is read and stored in data_lengths:
     data_lengths = []
     for d in sound_data_list:
@@ -65,9 +70,13 @@ def merge_waves(path: str) -> str:
 
 # ======================================================================================================
 
-
-# this function converts the given wav file to a h5 file named 'sound_data.h5'
 def wav2h5(wav_file: str) -> str:
+    """
+    Converts a given wav with multiple channels into a hdf5 file so that acoular can process the audio data
+
+    :param wav_file: multichannel wav file
+    :return: name of the resulting hdf5 file (currently 'sound_data.h5')
+    """
     # define the name of the h5 file to be written
     h5 = "sound_data.h5"
 
@@ -76,6 +85,7 @@ def wav2h5(wav_file: str) -> str:
 
     folder = ''
     # save_to acoular h5 format
+    # code was provided in an issue in the acoular github repository: https://github.com/acoular/acoular/issues/25
     acoularh5 = tables.open_file(folder + h5, mode="w", title="test")
     acoularh5.create_earray('/', 'time_data', atom=None, title='', filters=None,
                             expectedrows=100000, chunkshape=[256, 64],
@@ -100,8 +110,8 @@ def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_pat
     img = Image.open(gif_path)
     images = []
 
+    # iterating over all frames of the gif file
     frames = ImageSequence.Iterator(img)
-
     for frame in frames:
 
         try:
@@ -109,19 +119,25 @@ def remove_dark_background(gif_path: str, gif_interval: float, processed_gif_pat
             datas = img_mod.getdata()
 
             new_data = []
+            # Iterating over every pixel of the frame
             for item in datas:
+                # check if pixel is black RGB(0, 0, 0)
                 if item[0] == 0 and item[1] == 0 and item[2] == 0:
+                    # replace with transparent pixel
                     new_data.append((255, 255, 255, 0))
                 else:
+                    # replace with same value
                     new_data.append(item)
 
             img_mod.putdata(new_data)
 
+            # put all new frames into a list
             images.append(img_mod)
 
         except EOFError:
             continue
 
+    # convert the list into the processed gif file
     images[0].save(processed_gif_path, save_all=True, append_images=images[1:], optimize=True, duration=gif_interval,
                    loop=0,
                    disposal=2,
