@@ -5,6 +5,7 @@ if __name__ == '__main__':
     args = functions.parse_arguments()
     config = Config()
     if args.file is None:
+        # Throw an exception if one of the required parameters is not provided
         if args.audio or args.video or args.array is None:
             raise Exception(
                 "You have to provide at least the audio path the video path and the array config path or a config "
