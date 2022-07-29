@@ -262,4 +262,6 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--x-max", default=3, type=float)
     parser.add_argument("--y-min", default=-2.1, type=float)
     parser.add_argument("--y-max", default=2.1, type=float)
+    parser.add_argument("--transparency", default=0.8, type=float)
+    parser.add_argument("--min-volume", default=3.0, type=float)
     return parser.parse_args()
