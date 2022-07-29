@@ -12,7 +12,7 @@ if __name__ == '__main__':
                 "file as command line parameters!")
         config.init_values(args.audio, args.video, args.fps, args.frequency, args.distance, args.array, args.resolution,
                            args.x_min,
-                           args.x_max, args.y_min, args.y_max, args.output)
+                           args.x_max, args.y_min, args.y_max, args.output, args.transparency, args.min_volume)
     else:
         config.parse_from_yaml(args.file)
 
