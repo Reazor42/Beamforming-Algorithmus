@@ -25,6 +25,10 @@ class Config:
         path where the resulting video and the temporary files should be saved
     x_min, y_min, x_max, y_max
         dimensions of the acoustic pane
+    transparency:
+        the transparency of the acoustic map
+    minimum_volume:
+        the minimum values of acoustic data the map should show
     """
 
     def __init__(self):
@@ -40,12 +44,16 @@ class Config:
         self.y_min: float = -2.1
         self.y_max: float = 2.1
         self.output: str = "."
+        self.transparency: float = 0.8
+        self.minimum_volume: float = 3.0
 
     def init_values(self, audio: str, video: str, fps: int, frequency: int, distance: int
                     , array: str, resolution: float, x_min: float, x_max: float, y_min: float, y_max: float,
-                    output: str) -> None:
+                    output: str, transparency: float, minimum_volume: float) -> None:
         """
         Initializing attributes of the config by directly providing them
+        :param minimum_volume:
+        :param transparency:
         :param audio:
         :param video:
         :param fps:
@@ -71,6 +79,8 @@ class Config:
         self.y_max: float = y_max
         self.array: str = array
         self.output: str = output
+        self.transparency: float = transparency
+        self.minimum_volume: float = minimum_volume
 
     def parse_from_yaml(self, path: str) -> None:
         """
@@ -92,3 +102,5 @@ class Config:
             self.y_max: float = data["y_max"]
             self.array: str = data["array"]
             self.output: str = data["output"]
+            self.transparency: float = data["transparency"]
+            self.minimum_volume: float = data["minimum_volume"]

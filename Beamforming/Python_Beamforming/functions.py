@@ -169,6 +169,8 @@ def beamforming(h5_file, config: Config) -> None:
     audio_data: str = h5_file
     video_data: str = config.video
     out_dir: str = config.output
+    transparency: float = config.transparency
+    minimum_volume: float = config.minimum_volume
 
     # Stage 2
     ts: acoular.TimeSamples = acoular.TimeSamples(name=audio_data)
@@ -205,7 +207,8 @@ def beamforming(h5_file, config: Config) -> None:
         pm = r[0].reshape(rg.shape)
         lm = acoular.L_p(pm)
         plt.axis("off")
-        ax.imshow(lm.T, vmin=lm.max() - 5, vmax=lm.max(), origin='lower', cmap='plasma', extent=rg.extend(),
+        ax.imshow(lm.T, vmin=lm.max() - minimum_volume, vmax=lm.max(), origin='lower', cmap='plasma',
+                  extent=rg.extend(),
                   interpolation="bicubic")
         cam.snap()
     print("Calculation done... merging to gif")
@@ -216,10 +219,9 @@ def beamforming(h5_file, config: Config) -> None:
     animation.save(unprocessed_gif_path, writer='imagemagick')
     # Stage 5
     remove_dark_background(unprocessed_gif_path, gif_interval, processed_gif_path)
-    # https://stackoverflow.com/questions/52588428/how-to-set-opacity-transparency-of-overlay-using-ffmpeg
     # Stage 6
     os.system(
-        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa=0.8[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
+        f'ffmpeg -hide_banner -loglevel panic -i {video_data} -i {processed_gif_path} -filter_complex "[1]format=argb,colorchannelmixer=aa={transparency}[front];[front]scale=2230:1216[next];[0][next]overlay=x=-155:y=0,format=yuv420p" {join(out_dir, "overlay.mp4")}')
     # removing temporary files
     os.remove(unprocessed_gif_path)
     os.remove(processed_gif_path)
