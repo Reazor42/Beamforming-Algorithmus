@@ -1,6 +1,11 @@
 package application;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 public class BeamformingHandler {
 	
 	/*
@@ -10,6 +15,12 @@ public class BeamformingHandler {
 	private String audioPath;
 	private String videoPath;
 	private String micPath;
+	private String distance;
+	private String frequency;
+	
+	public boolean beamformingCompleted = false;
+	
+	public Process p;
 	
 	/*
 	 * define some constructors for different use cases
@@ -22,6 +33,14 @@ public class BeamformingHandler {
 		this.audioPath = audioPath;
 		this.videoPath = videoPath;
 		this.micPath = micPath;
+	}
+
+	public BeamformingHandler(String audioPath, String videoPath, String micPath, String distance, String frequency) {
+		this.audioPath = audioPath;
+		this.videoPath = videoPath;
+		this.micPath = micPath;
+		this.distance = distance;
+		this.frequency = frequency;
 	}
 	
 	
@@ -38,17 +57,46 @@ public class BeamformingHandler {
 			if(configFilePath != null) {
 				pb = new ProcessBuilder("python", pythonScriptPath, "--file", configFilePath).inheritIO();
 			}
-			else {
+			else if(distance == null & frequency == null) {
 				pb = new ProcessBuilder("python" , pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath).inheritIO();
 			}
+			else if(distance != null & frequency == null) {
+				pb = new ProcessBuilder("python" , pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath, "--distance", distance).inheritIO();
+			}
+			else if(distance == null & frequency != null) {
+				pb = new ProcessBuilder("python" , pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath, "--frequency", frequency).inheritIO();
+			}
+			else {
+				pb = new ProcessBuilder("python" , pythonScriptPath, "--audio", audioPath, "--video", videoPath, "--array", micPath, "--distance", distance, "--frequency", frequency).inheritIO();
+			}
 			
-			Process p = pb.start();
+			p = pb.start();
 			p.waitFor();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	
+	
+	/*
+	 * this function deletes the h5 file and the mp4 file if necessary
+	 */
+	public static void deleteFiles() {
+		String mp4File = "./overlay.mp4";
+		String h5File = "./sound_data.h5";
+		
+		Path mp4Path = Paths.get(mp4File);
+		Path h5Path = Paths.get(h5File);
+		try {
+			Files.deleteIfExists(mp4Path);
+			Files.deleteIfExists(h5Path);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -1,13 +1,13 @@
 # the path to the wav files used for merging and converting to h5
-audio: "C:/Users/marc.andresen/Desktop/Vehicle-Detection-Tests/ovad_dataset_audio/ovad_dataset/DB1/right/3_07_0184/out_multi.wav"
+audio: "C:/Users/marc.andresen/Documents/Aufnahme1_neues_Array/Recorded/Motorradgeraeusch_untenRechts"
 # the path to the video file
-video: "C:/Users/marc.andresen/Desktop/Vehicle-Detection-Tests/ovad_dataset_video/ovad_dataset/DB1/right/3_07_0184/ueye_stereo_vid.mp4"
+video: "C:/Users/marc.andresen/Documents/Aufnahme1_neues_Array/Recorded/Motorradgeraeusch_untenRechts/WIN_20220712_14_06_57_Pro_Trim.mp4"
 # the fps of the beamforming map
 fps: 10
 # the band-center frequency of the sound you want to measure
-frequency: 265
+frequency: 400
 # distance between array and sound source
-distance: 2
+distance: 1.5
 # resolution of the beamforming map
 resolution: 0.5
 # the dimensions of the RectGrid the size of the canvas
@@ -16,6 +16,6 @@ x_max: 3
 y_min: -2.1
 y_max: 2.1
 # path to the microphone xml file
-array: "C:/Users/marc.andresen/Desktop/Vehicle-Detection-Tests/config/ourmicarray_56.xml"
+array: "C:/Users/marc.andresen/Documents/GitHub/Beamforming-Algorithmus/Beamforming/Python_Beamforming/config/mic32.xml"
 # output path
 output: "."

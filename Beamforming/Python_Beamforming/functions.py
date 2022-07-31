@@ -82,7 +82,7 @@ def wav2h5(wav_file: str) -> str:
                             byteorder=None, createparents=False, obj=data)
     acoularh5.set_node_attr('/time_data', 'sample_freq', fs)
     acoularh5.close()
-    #os.remove(wav_file)
+    os.remove(wav_file)
 
     return h5
 
@@ -193,7 +193,7 @@ def beamforming(h5_file, config: Config) -> None:
     # removing temporary files
     os.remove(unprocessed_gif_path)
     os.remove(processed_gif_path)
-    #os.remove("sound_data.h5")
+    #os.remove(h5_file)
     print("Done.")
 
 

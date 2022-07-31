@@ -12,11 +12,12 @@ if __name__ == '__main__':
         config.parse_from_yaml(args.file)
 
     path = config.audio
+    print(path)
     video_name = config.video
 
     print("merging waves")
-    #merged_wav = functions.merge_waves(path)
+    merged_wav = functions.merge_waves(path)
     print("converting to h5")
-    h5 = functions.wav2h5(path)
+    h5 = functions.wav2h5(merged_wav)
     print("starting beamforming")
     functions.beamforming(h5, config)

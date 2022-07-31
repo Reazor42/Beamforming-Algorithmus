@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
@@ -13,86 +12,67 @@
 
 <AnchorPane minHeight="600.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainWindowController">
    <children>
-      <SplitPane dividerPositions="0.5311317186164898" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.3042681083894114" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <VBox alignment="CENTER" layoutX="64.0" layoutY="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Label text="Ergebnis:" />
-                        <MediaView fx:id="videoView" fitHeight="400.0" fitWidth="400.0" />
-                        <Button fx:id="playVideoButton" disable="true" mnemonicParsing="false" onAction="#playVideo" text="Video abspielen" />
-                     </children>
-                  </VBox>
-               </children></AnchorPane>
             <StackPane minWidth="300.0" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <VBox fx:id="chooseConfigModeVBox" alignment="CENTER" spacing="10.0" visible="false">
                      <children>
-                        <Label text="Wählen Sie einen Konfigurationsmodus aus:" />
-                        <ChoiceBox fx:id="configModeChoiceBox" onAction="#enableSubmitChoiceButton" prefHeight="25.0" prefWidth="235.0" />
-                        <Button fx:id="submitConfigModeButton" disable="true" mnemonicParsing="false" onAction="#loadConfigMode" text="OK" />
+                        <Button mnemonicParsing="false" onAction="#chooseConfigFile" prefHeight="25.0" prefWidth="180.0" text="Konfigurationsdatei auswählen" />
+                        <Label text="oder" />
+                        <Button mnemonicParsing="false" onAction="#loadManualConfigVBox" prefHeight="25.0" prefWidth="180.0" text="manuell konfigurieren" />
                      </children>
                   </VBox>
-                  <VBox fx:id="autoConfigVBox" alignment="CENTER" spacing="10.0">
+                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0">
                      <children>
-                        <Label text="Pfad zur Konfigurationsdatei eingeben:" />
-                        <HBox alignment="CENTER">
+                        <Button mnemonicParsing="false" onAction="#selectAudio" prefHeight="25.0" prefWidth="230.0" text="Audiodateien auswählen" />
+                        <Button mnemonicParsing="false" onAction="#selectVideo" prefHeight="25.0" prefWidth="230.0" text="Videodatei auswählen" />
+                        <Button mnemonicParsing="false" onAction="#selectMicConfig" prefHeight="25.0" prefWidth="230.0" text="Mikrofonkonfigurationsdatei auswählen" />
+                        <HBox alignment="CENTER" spacing="10.0">
                            <children>
-                              <TextField fx:id="configFilePathField" prefHeight="25.0" prefWidth="250.0" />
+                              <Label text="Distanz:" />
+                              <TextField fx:id="distanceField" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" spacing="25.0">
+                        <HBox alignment="CENTER" spacing="10.0">
                            <children>
-                              <Button fx:id="submitConfigFilePathButton" mnemonicParsing="false" onAction="#submitConfigFilePath" text="OK" />
-                              <Button fx:id="backToModeChoiceButton" mnemonicParsing="false" onAction="#loadConfigModeChoice" text="Back" />
+                              <Label text="Frequenz:" />
+                              <TextField fx:id="frequencyField" />
                            </children>
                         </HBox>
-                     </children>
-                  </VBox>
-                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0" visible="false">
-                     <children>
-                        <VBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Label text="Pfad zu den Audiodateien:" />
-                              <HBox alignment="CENTER">
-                                 <children>
-                                    <TextField fx:id="audioPathField" prefHeight="25.0" prefWidth="250.0" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Label text="Pfad zu der Videodatei:" />
-                              <HBox alignment="CENTER">
-                                 <children>
-                                    <TextField fx:id="videoPathField" prefHeight="25.0" prefWidth="250.0" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Label text="Pfad zu der Mikrofonkonfigurationsdatei:" />
-                              <HBox alignment="CENTER">
-                                 <children>
-                                    <TextField fx:id="micPathField" prefHeight="25.0" prefWidth="250.0" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
                         <HBox alignment="CENTER" spacing="20.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#submitManualPaths" text="OK" />
+                              <Button mnemonicParsing="false" onAction="#submitManualConfig" text="OK" />
                               <Button mnemonicParsing="false" onAction="#loadConfigModeChoice" text="Back" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
-                  <Button fx:id="startBeamformingButton" mnemonicParsing="false" onAction="#startBeamforming" text="Beamforming starten" visible="false" />
+                  <VBox fx:id="startBeamformingVBox" alignment="CENTER" spacing="20.0" visible="false">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#startBeamforming" prefHeight="25.0" prefWidth="125.0" text="Beamforming starten" />
+                        <Button mnemonicParsing="false" onAction="#backToStart" prefHeight="25.0" prefWidth="125.0" text="Back" />
+                     </children>
+                  </VBox>
+                  <Label text="starte Beamforming..." visible="false" />
                </children>
             </StackPane>
+          <AnchorPane minHeight="0.0" minWidth="500.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <VBox alignment="CENTER" layoutX="64.0" layoutY="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label text="Ergebnis:" />
+                        <MediaView fx:id="videoView" fitHeight="400.0" fitWidth="400.0" translateX="1.0" translateY="1.0" translateZ="1.0" />
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <Button fx:id="playVideoButton" disable="true" mnemonicParsing="false" onAction="#playVideo" prefHeight="25.0" prefWidth="85.0" text="SPIELEN" />
+                              <Button fx:id="pauseVideoButton" disable="true" mnemonicParsing="false" onAction="#pauseVideo" prefHeight="25.0" prefWidth="85.0" text="PAUSE" />
+                              <Button fx:id="resetVideoButton" disable="true" mnemonicParsing="false" onAction="#resetVideo" prefHeight="25.0" prefWidth="85.0" text="VON VORNE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></AnchorPane>
         </items>
       </SplitPane>
    </children>
