@@ -23,7 +23,7 @@
                         <Button mnemonicParsing="false" onAction="#loadManualConfigVBox" prefHeight="25.0" prefWidth="180.0" text="manuell konfigurieren" />
                      </children>
                   </VBox>
-                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0">
+                  <VBox fx:id="manualConfigVBox" alignment="CENTER" spacing="40.0" visible="false">
                      <children>
                         <Button mnemonicParsing="false" onAction="#selectAudio" prefHeight="25.0" prefWidth="230.0" text="Audiodateien auswählen" />
                         <Button mnemonicParsing="false" onAction="#selectVideo" prefHeight="25.0" prefWidth="230.0" text="Videodatei auswählen" />
@@ -48,13 +48,13 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="startBeamformingVBox" alignment="CENTER" spacing="20.0" visible="false">
+                  <VBox fx:id="startBeamformingVBox" alignment="CENTER" spacing="20.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#startBeamforming" prefHeight="25.0" prefWidth="125.0" text="Beamforming starten" />
-                        <Button mnemonicParsing="false" onAction="#backToStart" prefHeight="25.0" prefWidth="125.0" text="Back" />
+                        <Button fx:id="goBackButton" mnemonicParsing="false" onAction="#backToStart" prefHeight="25.0" prefWidth="125.0" text="Back" />
                      </children>
                   </VBox>
-                  <Label text="starte Beamforming..." visible="false" />
+                  <Label fx:id="progressLabel" text="starte Beamforming..." visible="false" />
                </children>
             </StackPane>
           <AnchorPane minHeight="0.0" minWidth="500.0" prefHeight="160.0" prefWidth="100.0">

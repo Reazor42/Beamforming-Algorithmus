@@ -77,6 +77,11 @@ public class BeamformingHandler {
 			e.printStackTrace();
 		}
 		
+//		try {
+//			Thread.sleep(5000);
+//		}
+//		catch(Exception e) {}
+		
 	}
 	
 	

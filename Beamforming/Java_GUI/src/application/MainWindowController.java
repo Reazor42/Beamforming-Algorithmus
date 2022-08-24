@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-//import javafx.scene.control.Label;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaView;
@@ -50,6 +50,8 @@ public class MainWindowController {
 	@FXML private TextField distanceField;
 	@FXML private TextField frequencyField;
 	@FXML private VBox startBeamformingVBox;
+	@FXML private Button goBackButton;
+	@FXML private Label progressLabel;
 	
 	//@FXML private Label progressLabel;
 	
@@ -131,13 +133,17 @@ public class MainWindowController {
 	// then run the beamforming
 	@FXML private void startBeamforming() {
 		startBeamformingVBox.setVisible(false);
-		if(player != null) removeMedia();
+		System.out.println(startBeamformingVBox.getScene().getWidth());
+		startBeamformingVBox.getScene().getWindow().setWidth(startBeamformingVBox.getScene().getWidth() + 0.001);
+		System.out.println(startBeamformingVBox.getScene().getWidth());
+		
+		//if(player != null) removeMedia();
 		BeamformingHandler.deleteFiles();
 		
 		if(configFilePath != null) {
 			bfh = new BeamformingHandler(configFilePath);
 		}
-		else if(distance == null & frequency == null){
+		else if(distance == null && frequency == null){
 			bfh = new BeamformingHandler(audioPath, videoPath, micPath);
 		}
 		else {
