@@ -17,6 +17,7 @@ if __name__ == '__main__':
         config.parse_from_yaml(args.file)
 
     path = config.audio
+    print(path)
     video_name = config.video
 
     print("merging waves")
